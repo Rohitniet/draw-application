@@ -12,5 +12,6 @@ function middleware(req, res, next) {
     if (decoded) {
         //@ts-ignore
         req.userid = decoded.userid;
+        next();
     }
 }

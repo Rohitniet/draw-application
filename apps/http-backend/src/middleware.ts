@@ -15,6 +15,8 @@ export function middleware(req:Request,res:Response,next:NextFunction){
         //@ts-ignore
         req.userid= decoded.userid
 
+        next()
+
 
     }
 }

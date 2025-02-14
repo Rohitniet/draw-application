@@ -65,6 +65,7 @@ app.post("/signin", async (req, res) => {
         });
     }
     const userid = response?.id;
+    console.log(userid);
     const token = jsonwebtoken_1.default.sign({
         userid: userid
     }, config_1.jwtsecret);
@@ -72,7 +73,7 @@ app.post("/signin", async (req, res) => {
         token: token
     });
 });
-app.post("/room", middleware_1.middleware, (req, res) => {
+app.post("/room", middleware_1.middleware, async (req, res) => {
     const data = types_1.CreateRoomSchema.safeParse(req.body);
     if (!data.success) {
         res.json({
@@ -82,8 +83,21 @@ app.post("/room", middleware_1.middleware, (req, res) => {
     }
     //@ts-ignore
     const userid = req.userid;
-    res.json({
-        roomid: 123
-    });
+    try {
+        const response = await client_1.prismaclient.room.create({
+            data: {
+                slug: data.data.room,
+                adminid: userid
+            }
+        });
+        res.json({
+            roomid: response.id
+        });
+    }
+    catch (e) {
+        res.json({
+            messgae: e
+        });
+    }
 });
 app.listen(3001);

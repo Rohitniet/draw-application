@@ -4,6 +4,24 @@ import { jwtsecret } from '@repo/common_backend/config';
 
 const wss = new WebSocketServer({ port: 8080 });
 
+
+// this function basically convert token into userid and also check th coming token is string and the decoded value of token is not string as it should be object and return userid 
+function checkuser(token:string):string | null {
+
+    const decoded= jwt.verify(token,jwtsecret);
+
+    if(typeof decoded =="string"){
+        return null
+    }
+
+    if(!decoded || !decoded.userid){
+        return null
+    }
+
+    return decoded.userid
+}
+
+
 wss.on('connection', function connection(ws,request ) {
 
     const url= request.url

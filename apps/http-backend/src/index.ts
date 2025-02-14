@@ -81,6 +81,7 @@ app.post("/signin", async (req,res)=> {
     }
 
     const userid=response?.id
+    console.log(userid)
 
     const token= jwt.sign({
         userid:userid
@@ -93,9 +94,11 @@ app.post("/signin", async (req,res)=> {
 })
 
 
-app.post("/room",middleware ,(req,res)=>{
+app.post("/room",middleware , async(req,res)=>{
 
     const data= CreateRoomSchema.safeParse(req.body)
+
+
    
     if(!data.success){
          res.json({
@@ -107,8 +110,26 @@ app.post("/room",middleware ,(req,res)=>{
  //@ts-ignore
     const userid=req.userid
 
-    res.json({
-        roomid: 123
+    try{
+
+    const response= await prismaclient.room.create({
+        data:{
+            slug:data.data.room,
+            adminid:userid
+
+        }
     })
+
+    res.json({
+        roomid: response.id
+    })
+}catch(e){
+
+    res.json({
+        messgae :e
+    })
+}
+
+   
 })
 app.listen(3001)
