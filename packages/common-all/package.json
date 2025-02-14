@@ -1,0 +1,23 @@
+{
+  "name": "@repo/common-all",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "start": "node ./dst/index.js",
+    "dev": "npm run build && npm run start"
+  },
+  "exports":{
+    "./types":"./src/index.ts"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "zod": "^3.24.2"
+  }
+}
