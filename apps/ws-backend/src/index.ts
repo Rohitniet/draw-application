@@ -1,9 +1,16 @@
-import { WebSocketServer } from 'ws';
+import { WebSocketServer, WebSocket } from 'ws';
 import jwt, { JwtPayload } from "jsonwebtoken"
 import { jwtsecret } from '@repo/common_backend/config';
 
 const wss = new WebSocketServer({ port: 8080 });
 
+interface User{
+    ws:WebSocket,
+    room:string[],
+    userid:string
+}
+
+const users:User[]=[]
 
 // this function basically convert token into userid and also check th coming token is string and the decoded value of token is not string as it should be object and return userid 
 function checkuser(token:string):string | null {
@@ -36,19 +43,69 @@ wss.on('connection', function connection(ws,request ) {
 
     const token =queryparams.get('token') ?? ""
     
-    const decoded=jwt.verify(token,jwtsecret)
+    const userid=checkuser(token)
 
-    if(!decoded || !(decoded as JwtPayload).userid){
+    if(!userid){
 
         ws.close();
         return
     }
 
+    users.push({
+        
+        ws,
+        room:  [],
+        userid
+    })
+
 
 
 
   ws.on('message', function message(data) {
-   ws.send("pong")
+
+    const parsedata=JSON.parse(data as unknown as string)
+
+    if(parsedata.type=="join_room"){
+        const user=users.find(x => x.ws==ws)
+
+        user?.room.push(parsedata.roomid)
+        console.log(users)
+    }
+
+    if(parsedata.type=="leave_room"){
+        const user=users.find(x => x.ws==ws)
+        if(!user){
+            return null;
+        }
+
+       user.room= user?.room.filter(x => x!= parsedata.roomid)
+
+       console.log(users)
+    }
+
+
+    if(parsedata.type==="chat"){
+        const message=parsedata.message
+        const roomid=parsedata.roomid
+
+        users.forEach(user => {
+
+            if(user.room.includes(roomid)){
+
+                user.ws.send(JSON.stringify({
+                    type:"chat",
+                    message,
+                    roomid
+
+
+                }))
+            }
+        })
+
+
+    }
+    
+  
   });
 
   
