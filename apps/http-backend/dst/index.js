@@ -65,7 +65,6 @@ app.post("/signin", async (req, res) => {
         });
     }
     const userid = response?.id;
-    console.log(userid);
     const token = jsonwebtoken_1.default.sign({
         userid: userid
     }, config_1.jwtsecret);
@@ -99,5 +98,31 @@ app.post("/room", middleware_1.middleware, async (req, res) => {
             messgae: e
         });
     }
+});
+app.get("/chat/:roomid", async (req, res) => {
+    const roomid = Number(req.params.roomid);
+    const message = await client_1.prismaclient.chat.findMany({
+        where: {
+            roomid
+        },
+        orderBy: {
+            id: "desc"
+        },
+        take: 50
+    });
+    res.json({
+        message
+    });
+});
+app.get("/room/:slug", async (req, res) => {
+    const slug = req.params.slug;
+    const room = await client_1.prismaclient.room.findFirst({
+        where: {
+            slug
+        },
+    });
+    res.json({
+        room: room
+    });
 });
 app.listen(3001);

@@ -81,7 +81,7 @@ app.post("/signin", async (req,res)=> {
     }
 
     const userid=response?.id
-    console.log(userid)
+    
 
     const token= jwt.sign({
         userid:userid
@@ -131,5 +131,45 @@ app.post("/room",middleware , async(req,res)=>{
 }
 
    
+})
+
+
+
+app.get("/chat/:roomid",async (req,res)=>{
+
+    const roomid=Number(req.params.roomid);
+
+    const message=await prismaclient.chat.findMany({
+
+        where:{
+            roomid
+        },
+        orderBy:{
+            id:"desc"
+        },
+        take:50
+    })
+    res.json({
+        message
+    })
+})
+
+
+
+
+app.get("/room/:slug",async (req,res)=>{
+
+    const slug= req.params.slug
+
+    const room=await prismaclient.room.findFirst({
+
+        where:{
+            slug
+        },
+       
+    })
+    res.json({
+        room :room
+    })
 })
 app.listen(3001)

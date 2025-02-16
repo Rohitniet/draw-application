@@ -1,7 +1,7 @@
 import { WebSocketServer, WebSocket } from 'ws';
 import jwt, { JwtPayload } from "jsonwebtoken"
 import { jwtsecret } from '@repo/common_backend/config';
-
+import {prismaclient} from "@repo/db/client"
 const wss = new WebSocketServer({ port: 8080 });
 
 interface User{
@@ -61,7 +61,7 @@ wss.on('connection', function connection(ws,request ) {
 
 
 
-  ws.on('message', function message(data) {
+  ws.on('message', async function message(data) {
 
     const parsedata=JSON.parse(data as unknown as string)
 
@@ -88,6 +88,20 @@ wss.on('connection', function connection(ws,request ) {
         const message=parsedata.message
         const roomid=parsedata.roomid
 
+
+        // this is the dumb way and ideal  approch would be using queue  and throw apipleine to db
+ await prismaclient.chat.create({
+    
+  data:{
+    message,
+    roomid,
+    userid
+
+  }
+
+ })
+ console.log("controls reaches here")
+console.log(users)
         users.forEach(user => {
 
             if(user.room.includes(roomid)){
