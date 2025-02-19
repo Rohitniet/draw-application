@@ -1,3 +1,4 @@
+import axios from "axios";
 import { Shapes } from "lucide-react";
 
 type shapes={
@@ -16,13 +17,13 @@ radius :number
 }
 
 
-export function draw(canvas:HTMLCanvasElement ){
+export async function draw(canvas:HTMLCanvasElement,roomid:string ){
 
     const ctx= canvas.getContext("2d")
 
 
     
-    const existingshapes:shapes[]=[]
+    const existingshapes:shapes[]= await getshape(roomid)
     
         
     
@@ -35,6 +36,7 @@ export function draw(canvas:HTMLCanvasElement ){
          ctx.fillStyle="rgba(0,0,0)"
          ctx.fillRect(0,0,canvas.width,canvas.height)
 
+         clearCanvas(existingshapes,ctx,canvas)
 
          let startX=0;
          let startY=0;
@@ -115,5 +117,24 @@ export function draw(canvas:HTMLCanvasElement ){
             }
 
         })
+
+     }
+
+
+     async function  getshape(roomid:string){
+
+        const res= await axios.get(`${Backend_url}chat/${roomid}`)
+       
+        const message=res.data.message
+
+        const shapes =message.map((x:{message:string})=>{
+
+            const messageData=JSON.parse(x.message)
+            return messageData
+        })
+
+        return shapes;
+
+        
 
      }
