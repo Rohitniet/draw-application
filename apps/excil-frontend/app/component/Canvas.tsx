@@ -11,7 +11,7 @@ useEffect(() => {
     if (canvasref.current) {
       const canvas = canvasref.current;
 
-      draw(canvas, roomid);
+      draw(canvas, roomid,socket);
     }
   }, [canvasref]);
 

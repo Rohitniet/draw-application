@@ -4,9 +4,9 @@ import { backend_url } from "../../config";
 
 async function getroomid(slug:string){
 
-    const response= await axios.get(`${backend_url}/room/${slug}`)
+    const response= await axios.get(`http://localhost:3001/room/${slug}`)
 
-    return response.data.room.id
+    return response.data.roomid
 }
 
 
@@ -19,9 +19,14 @@ export default async function  Chatroom({
             slug:string
         }
     }){
+ console.log("coonreol is here")
+        const awaitedparams = await (params) ;
+        console.log(awaitedparams.slug)
+        const roomid=await getroomid(awaitedparams.slug)
 
-        const slug =params.slug ;
-        const roomid=await getroomid(slug)
+        return <div>
+            this ischat room
+        </div>
         
 
 

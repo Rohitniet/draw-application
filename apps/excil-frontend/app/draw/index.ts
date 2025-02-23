@@ -1,3 +1,4 @@
+import { Backend_url } from "@/config";
 import axios from "axios";
 import { Shapes } from "lucide-react";
 
@@ -17,7 +18,7 @@ radius :number
 }
 
 
-export async function draw(canvas:HTMLCanvasElement,roomid:string ){
+export async function draw(canvas:HTMLCanvasElement,roomid:string,socket ){
 
     const ctx= canvas.getContext("2d")
 
