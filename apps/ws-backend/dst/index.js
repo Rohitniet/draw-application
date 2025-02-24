@@ -22,12 +22,15 @@ function checkuser(token) {
 }
 wss.on('connection', function connection(ws, request) {
     const url = request.url;
+    console.log("thise is the urlll" + url);
     if (!url) {
         return;
     }
     // here the urlsearchparams is a function that help us to from thr url object on the basis of the string provided 
     const queryparams = new URLSearchParams(url.split('?')[1]);
+    console.log(queryparams);
     const token = queryparams.get('token') ?? "";
+    console.log(token);
     const userid = checkuser(token);
     if (!userid) {
         ws.close();
@@ -60,7 +63,7 @@ wss.on('connection', function connection(ws, request) {
             await client_1.prismaclient.chat.create({
                 data: {
                     message,
-                    roomid,
+                    roomid: Number(roomid),
                     userid
                 }
             });

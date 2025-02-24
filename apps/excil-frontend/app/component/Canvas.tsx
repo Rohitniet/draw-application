@@ -3,7 +3,8 @@ import { draw } from "../draw";
 
 
 
-export function  FinalCanvas({roomid}:{roomid:string}){
+export function  FinalCanvas({roomid,socket}:{roomid:string,socket:WebSocket
+}){
 
 const canvasref = useRef<HTMLCanvasElement>(null);
 

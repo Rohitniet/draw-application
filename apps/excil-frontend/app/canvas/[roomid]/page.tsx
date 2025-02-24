@@ -13,7 +13,7 @@ export default async function mainCanvas({params}:{
 
     const roomid= (await params).roomid
 
-    console.log(roomid)
+   
 
 
     return <Canvas roomid={roomid}/>

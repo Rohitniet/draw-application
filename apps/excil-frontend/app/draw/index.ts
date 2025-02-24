@@ -18,7 +18,7 @@ radius :number
 }
 
 
-export async function draw(canvas:HTMLCanvasElement,roomid:string,socket ){
+export async function draw(canvas:HTMLCanvasElement,roomid:string,socket:WebSocket ){
 
     const ctx= canvas.getContext("2d")
 
@@ -26,12 +26,24 @@ export async function draw(canvas:HTMLCanvasElement,roomid:string,socket ){
     
     const existingshapes:shapes[]= await getshape(roomid)
     
-        
+    
+       
     
     
       if(!ctx){
         return ;
          }
+         socket.onmessage=(event)=>{
+            const parsedata=JSON.parse(event.data)
+
+
+            if(parsedata.type==="chat"){
+const parseshape= JSON.parse(parsedata.message)
+                existingshapes.push(parseshape)
+                clearCanvas(existingshapes,ctx,canvas)
+            }
+        }
+       
     
     
          ctx.fillStyle="rgba(0,0,0)"
@@ -57,13 +69,20 @@ export async function draw(canvas:HTMLCanvasElement,roomid:string,socket ){
                const width=e.clientX-startX
                 const hieght=e.clientY-startY
 
-            existingshapes.push({
-                type:"rec",
-                x:startX,
-                y:startY,
-                width,
-                hieght
-            })
+                const shape:shapes={
+                    type:"rec",
+                    x:startX,
+                    y:startY,
+                    width,
+                    hieght
+                }
+            existingshapes.push(shape)
+
+            socket.send(JSON.stringify({
+                type:"chat",
+                roomid:roomid,
+                message:JSON.stringify(shape)
+            }))
             
 
         })

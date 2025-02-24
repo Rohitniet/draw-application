@@ -32,6 +32,7 @@ function checkuser(token:string):string | null {
 wss.on('connection', function connection(ws,request ) {
 
     const url= request.url
+    console.log("thise is the urlll" +url)
 
     if(!url){
         return 
@@ -39,9 +40,12 @@ wss.on('connection', function connection(ws,request ) {
     
 
     // here the urlsearchparams is a function that help us to from thr url object on the basis of the string provided 
+    
     const queryparams=new URLSearchParams(url.split('?')[1])
+    console.log(queryparams)
 
     const token =queryparams.get('token') ?? ""
+    console.log(token)
     
     const userid=checkuser(token)
 
@@ -94,7 +98,7 @@ wss.on('connection', function connection(ws,request ) {
     
   data:{
     message,
-    roomid,
+    roomid:Number(roomid),
     userid
 
   }

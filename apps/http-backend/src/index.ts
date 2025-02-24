@@ -4,13 +4,16 @@ import { jwtsecret } from "@repo/common_backend/config"
 import { middleware } from "./middleware"
 import {CreateUserSchema ,SigninSchema ,CreateRoomSchema} from "@repo/common-all/types"
 import{prismaclient } from "@repo/db/client"
+import cors from"cors"
 const app= express()
 
 app.use(express.json())
 
+app.use(cors())
+
 
 app.post("/signup", async(req,res)=> {
-    console.log("controlreachews")
+    
 
     const data= CreateUserSchema.safeParse(req.body)
     console.log(data.data)
